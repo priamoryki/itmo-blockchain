@@ -6,8 +6,8 @@
    *  Constants
    */
    uint constant public MAX_OWNER_COUNT = 50; 
-   + // Константа для чистоты кода
-   + uint constant public MAX_TRANSFER_VALUE = 66 ether;
+  + // Константа для чистоты кода
+  + uint constant public MAX_TRANSFER_VALUE = 66 ether;
   ```
     
   ```diff
