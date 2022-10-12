@@ -35,7 +35,7 @@
   +    // Количество целых дней считая от 1 Января 1970
   +    uint dayNum = currentUnixTime / (60 * 60 * 24);
   +    // 0 - Понедельник, 6 - Воскресенье
-  +    // weekDay = (dayNum - 2) % 7
+  +    weekDay = (dayNum - 2) % 7
   +    require(weekDay != 5, "ERC20: can't make transfer on Saturday")
       require(_balances[sender] >= amount, "ERC20: transfer amount exceeds balance");
   ```
