@@ -30,7 +30,7 @@
       require(recipient != address(0), "ERC20: transfer to the zero address");
   
       _beforeTokenTransfer(sender, recipient, amount);
-  +    Время в секундах считая от 1 Января 1970, Среда
+  +    // Время в секундах считая от 1 Января 1970, Среда
   +    uint currentUnixTime = block.timestamp;
   +    // Количество целых дней считая от 1 Января 1970
   +    uint dayNum = currentUnixTime / (60 * 60 * 24);
