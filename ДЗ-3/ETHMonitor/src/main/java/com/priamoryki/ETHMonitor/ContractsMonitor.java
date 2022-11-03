@@ -46,12 +46,11 @@ public class ContractsMonitor {
                                     ).collect(Collectors.joining(", "));
                                     BigInteger updatedAt = (BigInteger) values.getNonIndexedValues().get(0).getValue();
                                     System.out.printf(
-                                            "%s update (method 1): ts=%d, current=%d, roundId=%d%n%s%n",
+                                            "%s update: ts=%d, current=%d, roundId=%d%n",
                                             name,
                                             updatedAt,
                                             current,
-                                            roundId,
-                                            result
+                                            roundId
                                     );
                                 }
                         )
