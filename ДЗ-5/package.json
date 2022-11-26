@@ -3,5 +3,10 @@
   "dependencies": {
     "@nomicfoundation/hardhat-toolbox": "^2.0.0",
     "openzeppelin-solidity": "^4.6.0"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.6",
+    "chai": "^4.3.7",
+    "hardhat": "^2.12.2"
   }
 }

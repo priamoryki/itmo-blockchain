@@ -16,7 +16,7 @@ describe("RAPHICoin", function () {
         const RAPHICoin = await (await ethers.getContractFactory("RaphiCoin")).deploy();
 
         const ownerBalance = await RAPHICoin.balanceOf(owner.address);
-        const balance = ethers.BigNumber.from('100000000')
+        const balance = ethers.BigNumber.from("100000000")
         expect(ownerBalance).to.equal(balance);
     });
 });
