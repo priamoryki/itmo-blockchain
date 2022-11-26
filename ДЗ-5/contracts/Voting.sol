@@ -8,7 +8,7 @@ contract Voting {
     event Discarded(uint256 id);
 
     uint constant MAX_PROPOSALS_NUMBER = 3;
-    uint constant TTL_OF_PROPOSAL = 60 * 60 * 24 * 3;
+    uint constant TTL_OF_PROPOSAL = 3 * 24 * 60 * 60;
     ERC20 public token;
     Proposal[MAX_PROPOSALS_NUMBER] public proposals;
 
@@ -17,8 +17,8 @@ contract Voting {
     }
 
     struct Proposal {
-        uint256 id;
-        bool isActive;
+        uint256 id; // unique proposal id
+        bool isActive; // true --- one of the events has emitted (Accepted, Rejected, Discarded), false otherwise
         address creatorAddress;
         Vote[] votesFor;
         Vote[] votesAgainst;
@@ -39,7 +39,7 @@ contract Voting {
         require(_findProposalIndexById(id) == MAX_PROPOSALS_NUMBER, "Proposal with this id exists");
         Proposal storage proposal = proposals[idx];
 
-        // if proposal that we found still active, than we must emit Discarded for it
+        // proposal that we found still active --- emit Discarded for it
         if (proposal.isActive) {
             emit Discarded(proposal.id);
         }
@@ -63,6 +63,7 @@ contract Voting {
         require(!(proposal.deadlineTimestamp < block.timestamp), "Proposal has expired");
         require(_checkIfVoted(msg.sender, proposal), "Already voted for proposal");
 
+        // state of votes is invalid --- emit Discarded
         if (!_checkProposalVotesValid(proposal)) {
             proposal.isActive = false;
             emit Discarded(id);
@@ -80,7 +81,7 @@ contract Voting {
         proposal.isActive = !_isCompleted(proposal);
     }
 
-    // @return true if proposal is now active, false otherwise
+    // @return true --- proposal is now active, false otherwise
     function getProposalActive(uint256 id) public view returns (bool) {
         uint idx = _findProposalIndexById(id);
         if (idx == MAX_PROPOSALS_NUMBER) {
@@ -98,7 +99,7 @@ contract Voting {
     }
 
     // finds index of proposal with given id
-    // @return MAX_PROPOSALS_NUMBER if such proposal doesn't exist or index of this slot in other case
+    // @return MAX_PROPOSALS_NUMBER --- such proposal doesn't exist or index of this slot in other case
     function _findProposalIndexById(uint256 id) internal view returns (uint) {
         for (uint i = 0; i < MAX_PROPOSALS_NUMBER; i++) {
             if (proposals[i].id == id) {
@@ -109,7 +110,7 @@ contract Voting {
     }
 
     // finds index of free slot for creating a new proposal
-    // @return MAX_PROPOSALS_NUMBER if such slot doesn't exist or index of this slot in other case
+    // @return MAX_PROPOSALS_NUMBER --- such slot doesn't exist or index of this slot in other case
     function _findFreeProposalSlot() internal view returns (uint) {
         for (uint i = 0; i < MAX_PROPOSALS_NUMBER; i++) {
             if (!proposals[i].isActive) {
@@ -127,12 +128,12 @@ contract Voting {
         return result;
     }
 
-    // @return true if all votes are valid, false otherwise
+    // @return true --- all votes are valid, false otherwise
     function _checkProposalVotesValid(Proposal storage proposal) internal view returns (bool) {
         return _areVotesValid(proposal.votesFor) && _areVotesValid(proposal.votesAgainst);
     }
 
-    // @return true if all voters have valid amount of tokens, false otherwise
+    // @return true --- all voters have valid amount of tokens, false otherwise
     function _areVotesValid(Vote[] storage votes) internal view returns (bool) {
         for (uint i = 0; i < votes.length; i++) {
             if (token.balanceOf(votes[i].voter) < votes[i].value) {
@@ -142,12 +143,12 @@ contract Voting {
         return true;
     }
 
-    // @return true if voter hasn't voted yet, false otherwise
+    // @return true --- voter hasn't voted yet, false otherwise
     function _checkIfVoted(address voter, Proposal storage proposal) internal view returns (bool) {
         return _hasAlreadyVoted(voter, proposal.votesFor) && _hasAlreadyVoted(voter, proposal.votesAgainst);
     }
 
-    // @return true if voter hasn't voted yet, false otherwise
+    // @return true --- voter hasn't voted yet, false otherwise
     function _hasAlreadyVoted(address voter, Vote[] storage votes) internal view returns (bool) {
         for (uint i = 0; i < votes.length; i++) {
             if (votes[i].voter == voter) {
@@ -166,7 +167,7 @@ contract Voting {
         return result;
     }
 
-    // @return true if proposal completed, false otherwise
+    // @return true --- proposal completed, false otherwise
     function _isCompleted(Proposal storage proposal) internal returns (bool) {
         if (_count(proposal.votesFor) >= 50) {
             emit Accepted(proposal.id);
